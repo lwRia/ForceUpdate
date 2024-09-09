@@ -25,6 +25,7 @@ class AppUpdateService {
         private var appId: String = ""
         private var showNativeUI: Boolean = false
         private const val TAG = "AppUpdateService"
+        private var isResponseReceived : Boolean = false
 
 
         private fun getResponse(response: Response, context: Context, callBack: UpdateCallBack, isFromCDN: Boolean) {
@@ -107,15 +108,30 @@ class AppUpdateService {
             })
         }
 
-        fun checkForAppUpdate(showNativeUI: Boolean,context: Context, callBack: UpdateCallBack ) {
+        fun checkForAppUpdate(context: Context, callBack: UpdateCallBack, options: Map<String, Any> = emptyMap() ) {
             val appId: String = CoreService.getAppId(context)
             AppUpdateService.appId = appId
-            AppUpdateService.showNativeUI = showNativeUI
+             if(options.isNotEmpty()) {
+                if(options.containsKey(key = "showNativeUI")){
+                    if(options["showNativeUI"] is Boolean){
+                        showNativeUI = options["showNativeUI"] as Boolean
+                    }else{
+                        showNativeUI =  true
+                    }
+                }
+            } else{
+                 showNativeUI =  true
+            }
+
             val updateNetworkState = UpdateNetwork { isConnected ->
                 if (isConnected) {
                     // Network is available
                     println("Network is available")
-                    callCDNServiceApi(context, callBack)
+                    if(!isResponseReceived){
+                        callCDNServiceApi(context, callBack)
+                        isResponseReceived = true
+                    }
+
                 } else {
                     // Network is lost
                     println("Network is lost")

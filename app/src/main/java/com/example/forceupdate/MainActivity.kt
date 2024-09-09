@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             ForceUpdateTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "from AppsOnAir",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         //Get your appId from https://appsonair.com/
-        AppUpdateService.checkForAppUpdate(true,this,  updateCallback)
+        AppUpdateService.checkForAppUpdate(this,  updateCallback, options = mapOf("showNativeUI" to true))
     }
 }
 
